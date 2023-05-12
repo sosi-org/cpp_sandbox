@@ -153,6 +153,7 @@ if(ENABLE_PROFILING)
   )
 endif()
 
+#[==[
 target_include_directories(image_loader_cpu
 
   # import
@@ -168,6 +169,7 @@ target_include_directories(image_loader_cpu
   #    # used for compiling others
   # In modern CMake, it is recommended to use build directory for all generated files and artifacts. That's why having an absolute path inside your source directory in your build specification is not recommended and CMake warns about it.
 )
+#]==]
 
 message(STATUS "Current source directory: ${CMAKE_CURRENT_SOURCE_DIR}")
 # Current source directory: /Users/sohail/opteran/work/image_loader
@@ -184,6 +186,11 @@ target_include_directories(image_loader_cpu
       # I see. I am exporting something inside the source (not built) ones
 )
 #]==]
+
+target_include_directories(image_loader_cpu
+  PRIVATE
+      include
+)
 
 message(STATUS ${CMAKE_SOURCE_DIR})
 

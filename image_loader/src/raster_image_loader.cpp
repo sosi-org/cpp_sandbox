@@ -1,11 +1,15 @@
 
 // imported
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#define STBI_ONLY_PNG
+#include "stb/stb_image.h"
 
 // Is exported
-#include <lib_raster_iamge_loader>
+// todo: rename name and folder
+#include <lib_raster_image_loader/raster_image_loader.hpp>
+
+#include <iostream>
 
 void load_image(const std::string& fname) {
-  ;
+  std::cout << fname << std::endl;
 }
