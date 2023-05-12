@@ -1,0 +1,65 @@
+#!/bin/bash
+
+set -u
+
+test "$#" -ge 1 || { echo "Error: This script requires at least one argument."; exit 1; }
+
+# This too Can run from anywhere:
+THIS_SCRIPT_NAME=$(realpath -s "${BASH_SOURCE[0]}"  )
+THIS_SCRIPT_DIR=$(cd -- "$(dirname -- $THIS_SCRIPT_NAME )" &>/dev/null && pwd)
+: ${THIS_SCRIPT_DIR:?Error: THIS_SCRIPT_DIR is not set or is empty.}
+test -d $THIS_SCRIPT_DIR
+
+
+TEMP=$THIS_SCRIPT_DIR/temp
+rm -rf $TEMP
+mkdir -p $TEMP
+
+echo 1=$1
+: ${1:?Error: argument 1 is not set or is empty.}
+
+#template
+script_name=$(realpath -s "${1}"  )
+test -f $script_name
+: ${script_name:?Error: script_name is not set or is empty.}
+
+echo "input script name=$script_name"
+
+
+# cd $THIS_SCRIPT_DIR
+
+# this file
+# prefix_header_name="${BASH_SOURCE[0]}"
+prefix_header_name=$THIS_SCRIPT_DIR/paths.bash.prefix
+test -f $prefix_header_name
+: ${prefix_header_name:?Error: prefix_header_name is not set or is empty.}
+
+#instantiated
+# built_script="$TEMP/intantiated.script_name.bash"
+bname=$(basename "$script_name")
+# built_script=$(mktemp --tmpdir="$TEMP" --suffix=".${bname##*.}")
+built_script=$(mktemp $TEMP/temp-executable--${bname}--.XXXXXX) || exit 1
+echo "built_script=$built_script"
+echo $TEMP
+
+set -exu
+
+# empty file
+cp /dev/null $built_script
+ls -alt $(dirname $built_script)
+chmod +x $built_script
+cat $prefix_header_name >>$built_script
+cat $script_name  >>$built_script
+ls -alt $(dirname $built_script)
+cat $built_script
+
+export ORIGINAL_SCRIPT_NAME=$script_name
+export ORIGINAL_SCRIPT_DIR="$(dirname -- $script_name )"
+: ${ORIGINAL_SCRIPT_DIR:?Error: ORIGINAL_SCRIPT_DIR is not set or is empty.}
+: ${ORIGINAL_SCRIPT_NAME:?Error: ORIGINAL_SCRIPT_NAME is not set or is empty.}
+test -d $ORIGINAL_SCRIPT_DIR
+test -f $ORIGINAL_SCRIPT_NAME
+
+# and now run it!
+echo "and now run it!"
+bash $built_script $@

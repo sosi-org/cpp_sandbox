@@ -1,0 +1,38 @@
+#!/bin/bash
+######### The header ###########################
+
+# no echo, but enable error checking
+set -eu
+
+# This too Can run from anywhere:
+#THIS_SCRIPT_NAME=$(realpath -s "${BASH_SOURCE[0]}"  )
+#THIS_SCRIPT_DIR=$(cd -- "$(dirname -- $THIS_SCRIPT_NAME )" &>/dev/null && pwd)
+
+
+# from (is set in) run script
+: ${ORIGINAL_SCRIPT_DIR:?Error: ORIGINAL_SCRIPT_DIR is not set or is empty.}
+: ${ORIGINAL_SCRIPT_NAME:?Error: ORIGINAL_SCRIPT_NAME is not set or is empty.}
+test -d $ORIGINAL_SCRIPT_DIR
+test -f $ORIGINAL_SCRIPT_NAME
+
+ORIG_PWD=$(pwd)
+: ${ORIG_PWD:?Error: ORIG_PWD is not set or is empty.}
+test -d $ORIG_PWD
+
+cd $ORIGINAL_SCRIPT_DIR
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+: ${REPO_ROOT:?Error: REPO_ROOT is not set or is empty.}
+#: ${THIS_SCRIPT_DIR:?Error: THIS_SCRIPT_DIR is not set or is empty.}
+#: ${THIS_SCRIPT_NAME:?Error: THIS_SCRIPT_NAME is not set or is empty.}
+test -d $REPO_ROOT
+#test -d $THIS_SCRIPT_DIR
+#test -f $THIS_SCRIPT_NAME
+
+cd $ORIG_PWD
+
+shift
+
+######### The real scrip begins here: ###########################
+# set -x
+set -eu
